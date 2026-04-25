@@ -14,39 +14,52 @@ package com.mycompany.restaurantee;
 
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class Reservacion {
-    private int idReservacion;
-    private String nombreReservacion;
-    private int numPersonas;
+    private String nombre;
+    private int mesa;
     private LocalDate fecha;
-    private String estado;
+    private LocalTime hora;
+
+    public Reservacion(String nombre, int mesa, LocalDate fecha, LocalTime hora) {
+        this.nombre = nombre;
+        this.mesa = mesa;
+        this.fecha = fecha;
+        this.hora = hora;
+    }
+
+    
+
+    public Reservacion() {
+    }
+
+    
+    public int getMesa() {
+        return mesa;
+    }
+
+    public void setMesa(int mesa) {
+        this.mesa = mesa;
+    }
+
+    public LocalTime getHora() {
+        return hora;
+    }
+
+    public void setHora(LocalTime hora) {
+        this.hora = hora;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
     
     
-    
-    public int getIdReservacion() {
-        return idReservacion;
-    }
-
-    public void setIdReservacion(int idReservacion) {
-        this.idReservacion = idReservacion;
-    }
-
-    public String getNombreReservacion() {
-        return nombreReservacion;
-    }
-
-    public void setNombreReservacion(String nombreReservacion) {
-        this.nombreReservacion = nombreReservacion;
-    }
-
-    public int getNumPersonas() {
-        return numPersonas;
-    }
-
-    public void setNumPersonas(int numPersonas) {
-        this.numPersonas = numPersonas;
-    }
 
     public LocalDate getFecha() {
         return fecha;
@@ -54,14 +67,6 @@ public class Reservacion {
 
     public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
     }
    
     

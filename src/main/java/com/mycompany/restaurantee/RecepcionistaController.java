@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 
 import javafx.scene.shape.Circle;
 import javafx.scene.control.TextArea;
@@ -20,6 +21,7 @@ import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 
 import javafx.animation.KeyFrame;
@@ -32,6 +34,12 @@ import java.time.LocalTime;
 import java.time.LocalDateTime;
 
 import javafx.animation.Timeline;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 /**
  * FXML Controller class
@@ -45,13 +53,32 @@ public class RecepcionistaController implements Initializable {
     @FXML private Circle mesa3;
     @FXML private Circle mesa4;
     @FXML private Circle mesa5;
-    @FXML private Circle mesa6;    
-    @FXML private TextFlow areaReservaciones;
+    @FXML private Circle mesa6;   
     
     @FXML private TextField txtNombre;
     @FXML private TextField numMesa;
     @FXML private TextField txtFecha;
     @FXML private TextField txtHora;
+    @FXML
+    private TableView<ListaEspera> tablaEspera;
+
+    @FXML
+    private TableColumn<ListaEspera, Integer> colIdEspera;
+    @FXML
+    private TableColumn<ListaEspera, String> colNombreEspera;
+    @FXML
+    private TableColumn<ListaEspera, Integer> colMesaEspera;
+    @FXML
+    private TableView<Reservacion> tablaReservaciones;
+
+    @FXML
+    private TableColumn<Reservacion, String> colNombre;
+    @FXML
+    private TableColumn<Reservacion, Integer> colMesa;
+    @FXML
+    private TableColumn<Reservacion, LocalDate> colFecha;
+    @FXML
+    private TableColumn<Reservacion, LocalTime> colHora;
     
     
     
@@ -60,15 +87,39 @@ public class RecepcionistaController implements Initializable {
      @Override
     public void initialize(URL url, ResourceBundle rb) {
         
+        //Lista reservaciones
+         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+         colMesa.setCellValueFactory(new PropertyValueFactory<>("mesa"));
+         colFecha.setCellValueFactory(new PropertyValueFactory<>("fecha"));
+         colHora.setCellValueFactory(new PropertyValueFactory<>("hora"));
+         
+         colHora.setCellFactory(column -> new TableCell<Reservacion, LocalTime>() {
+             @Override
+             protected void updateItem(LocalTime item, boolean empty) {
+                 super.updateItem(item, empty);
+                 if (empty || item == null) {
+                     setText(null);
+                 } else {
+                     setText(item.withSecond(0).withNano(0).toString());
+                 }
+             }
+         });
+
+         cargarReservaciones();
+        //Lista espera
+         colIdEspera.setCellValueFactory(new PropertyValueFactory<>("id"));
+         colNombreEspera.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+         colMesaEspera.setCellValueFactory(new PropertyValueFactory<>("mesa"));
+        
         cargarMesas();
-        cargarReservaciones();
+        
          
         Timeline  tiempo = new Timeline (
-         new KeyFrame(Duration.seconds(10), e ->{
+         new KeyFrame(Duration.seconds(900), e ->{
              
+         cargarListaEspera();
          limpiarReservaciones();
          cargarMesas();
-         cargarReservaciones();
              
          })
         );
@@ -77,7 +128,8 @@ public class RecepcionistaController implements Initializable {
         tiempo.play();
        
       
-    }    
+    }
+    
     
     
     
@@ -150,33 +202,40 @@ public class RecepcionistaController implements Initializable {
             
         }
     
+
     
     
     
-    public void cargarReservaciones(){
-        try{
-            Connection conexionSQL = Conexion.getConnection();
-        
-        String consultaSQL = "select * from  reservacion";
-        
-        Statement preguntas = conexionSQL.createStatement();
-        ResultSet respuesta = preguntas.executeQuery(consultaSQL);
-            
-       
-        
-        areaReservaciones.getChildren().clear();    
-        
-        while(respuesta.next()){
-            String linea = respuesta.getString("nombre_cliente") + " - mesa " + respuesta.getInt("id_mesa") + " - " + respuesta.getString("fecha_hora") +"\n";
-            
-              Text texto = new Text(linea);
-              areaReservaciones.getChildren().add(texto);
-        }
-        
-       
-        
-        }
-        catch(Exception e){
+    public void cargarReservaciones() {
+
+        ObservableList<Reservacion> lista = FXCollections.observableArrayList();
+
+        try {
+            Connection conexion = Conexion.getConnection();
+            String sql = "SELECT * FROM reservacion";
+
+            Statement st = conexion.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+
+                String nombre = rs.getString("nombre_cliente");
+                int mesa = rs.getInt("id_mesa");
+
+                Timestamp ts = rs.getTimestamp("fecha_hora");
+                LocalDateTime ldt = ts.toLocalDateTime();
+
+                lista.add(new Reservacion(
+                        nombre,
+                        mesa,
+                        ldt.toLocalDate(),
+                        ldt.toLocalTime()
+                ));
+            }
+
+            tablaReservaciones.setItems(lista);
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -199,67 +258,136 @@ public class RecepcionistaController implements Initializable {
 
         cargarMesas();
     }
-    
-    
-    
-    
-    public void btnreservar(ActionEvent event){
-        
-        String nombre = txtNombre.getText();
-        String mesatxt = numMesa.getText();
-        
-        
-        if(nombre.isEmpty() || mesatxt.isEmpty()){
-                
-            System.out.println("Escribe el nombre o numero de mesa");
-            return;
-        }
-        
-        ReservacionDAO reservaciondao = new ReservacionDAO();
-        MesaDAO mesadao = new MesaDAO();
-        
-        int numMesa = Integer.parseInt(mesatxt);
-        String estado = mesadao.obtenerEstado(numMesa);
-        
-        if(estado.equals("libre")){
-            
-            
-            
-             LocalDateTime fechaHora = LocalDateTime.now();
-             
-             
-             
-             reservaciondao.insertarReservacion(nombre, numMesa, fechaHora);
-             mesadao.cambiarEstado(numMesa, "reservada");
-             
-             cargarMesas();
-             cargarReservaciones();   
-        }
-        else{
-            System.out.println("mesa no disponible");
+    public void cargarListaEspera() {
+
+        ObservableList<ListaEspera> lista = FXCollections.observableArrayList();
+
+        try {
+            Connection conexion = Conexion.getConnection();
+
+            String sql = "SELECT * FROM lista_espera";
+            Statement st = conexion.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+                lista.add(new ListaEspera(
+                        rs.getInt("id_espera"),
+                        rs.getString("nombre_cliente"),
+                        rs.getInt("id_mesa")
+                ));
+            }
+
+            tablaEspera.setItems(lista);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     
     
     
-    public void btnLiberar(ActionEvent event){
-       
+    
+    public void btnreservar(ActionEvent event) {
+
+        String nombre = txtNombre.getText();
         String mesatxt = numMesa.getText();
-        
-        
-        if(mesatxt.isEmpty()){
-                
+        String fechaTexto = txtFecha.getText();
+        String horaTexto = txtHora.getText();
+
+        if (nombre.isEmpty() || mesatxt.isEmpty() || fechaTexto.isEmpty() || horaTexto.isEmpty()) {
+            System.out.println("Complete todos los campos requeridos");
+            return;
+        }
+
+        int mesa = Integer.parseInt(mesatxt);
+
+        LocalDate fecha;
+        LocalTime hora;
+
+        try {
+            fecha = LocalDate.parse(fechaTexto);
+            hora = LocalTime.parse(horaTexto);
+        } catch (Exception e) {
+            System.out.println("Formato incorrecto. Usa yyyy-MM-dd y HH:mm");
+            return;
+        }
+
+        LocalDateTime fechaHora = LocalDateTime.of(fecha, hora);
+
+        ReservacionDAO reservacionDAO = new ReservacionDAO();
+        MesaDAO mesaDAO = new MesaDAO();
+        ListaEsperaDAO esperaDAO = new ListaEsperaDAO();
+
+        String estadoMesa = mesaDAO.obtenerEstado(mesa);
+
+      
+        if (!estadoMesa.equals("libre")) {
+
+            esperaDAO.insertarEnEspera(nombre, mesa);
+            cargarListaEspera();
+
+            System.out.println("Mesa no disponible. Agregado a lista de espera");
+            return;
+        }
+
+        reservacionDAO.insertarReservacion(nombre, mesa, fechaHora);
+        mesaDAO.cambiarEstado(mesa, "reservada");
+
+        cargarReservaciones();
+        cargarMesas();
+
+        System.out.println("Reservación creada");
+    }
+    public void asignarDesdeListaEspera(int idMesa) {
+
+        ListaEsperaDAO esperaDAO = new ListaEsperaDAO();
+        ReservacionDAO reservacionDAO = new ReservacionDAO();
+        MesaDAO mesaDAO = new MesaDAO();
+
+        ListaEspera cliente = esperaDAO.obtenerPrimero();
+
+        if (cliente != null) {
+
+            LocalDateTime fechaHora = LocalDateTime.now();
+
+            reservacionDAO.insertarReservacion(
+                    cliente.getNombre(),
+                    idMesa,
+                    fechaHora
+            );
+
+            esperaDAO.eliminar(cliente.getId());
+
+            mesaDAO.cambiarEstado(idMesa, "reservada");
+
+            cargarListaEspera();
+            cargarReservaciones();
+            cargarMesas();
+        }
+    }
+    
+    
+    
+    public void btnLiberar(ActionEvent event) {
+
+        String mesatxt = numMesa.getText();
+
+        if (mesatxt.isEmpty()) {
             System.out.println("Escribe el numero de mesa");
             return;
         }
-        
-        MesaDAO mesadao = new MesaDAO();
-        
+
         int numMesa = Integer.parseInt(mesatxt);
+
+        MesaDAO mesadao = new MesaDAO();
+
+        
         mesadao.liberarMesa(numMesa);
+
         
-        
-        cargarMesas();  
+        asignarDesdeListaEspera(numMesa);
+
+        cargarMesas();
     }
     
     
@@ -289,22 +417,70 @@ public class RecepcionistaController implements Initializable {
     
     
     
-    public void limpiarReservaciones(){
-        try{
-            
-            String consultaSQL = "delete from reservacion where timestampdiff (minute, fecha_hora, now()) >= 15";
-            
+    public void limpiarReservaciones() {
+        try {
+
             Connection conexion = Conexion.getConnection();
-            Statement preguntas = conexion.createStatement();
-            preguntas.executeUpdate(consultaSQL);
-            
-            String consultaSQLliberar = "update  mesa set estado = 'libre' where numero not in (select id_mesa from reservacion)";
-            preguntas.executeUpdate(consultaSQLliberar);
-            
-        }
-        catch(Exception e){
+            Statement st = conexion.createStatement();
+
+            String eliminar = "DELETE FROM reservacion WHERE TIMESTAMPDIFF(MINUTE, fecha_hora, NOW()) >= 15";
+            st.executeUpdate(eliminar);
+
+            String liberar = "UPDATE mesa SET estado = 'libre' WHERE numero NOT IN (SELECT id_mesa FROM reservacion)";
+            st.executeUpdate(liberar);
+
+            String sqlMesasLibres = "SELECT numero FROM mesa WHERE estado = 'libre'";
+            ResultSet rs = st.executeQuery(sqlMesasLibres);
+
+            while (rs.next()) {
+                int mesaLibre = rs.getInt("numero");
+                asignarDesdeListaEspera(mesaLibre);
+            }
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    public String estadoRestaurante() {
+
+        try {
+            Connection conexion = Conexion.getConnection();
+            String sql = "SELECT estado FROM mesa";
+
+            Statement st = conexion.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
+            boolean hayLibre = false;
+            boolean todasOcupadas = true;
+
+            while (rs.next()) {
+                String estado = rs.getString("estado");
+
+                if (estado.equals("libre")) {
+                    hayLibre = true;
+                    todasOcupadas = false;
+                }
+
+                if (estado.equals("reservada")) {
+                    todasOcupadas = false;
+                }
+            }
+
+            if (hayLibre) {
+                return "libre";
+            }
+
+            if (todasOcupadas) {
+                return "ocupado";
+            }
+
+            return "reservado"; // no hay libres pero hay reservadas
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "";
     }
     
     public boolean lleno(){
@@ -338,6 +514,7 @@ public class RecepcionistaController implements Initializable {
          e.printStackTrace();
      }
      return false;
+     
         
  
     }

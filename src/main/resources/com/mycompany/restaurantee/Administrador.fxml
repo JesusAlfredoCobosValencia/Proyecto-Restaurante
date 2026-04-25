@@ -13,11 +13,55 @@
    <children>
       <AnchorPane prefHeight="400.0" prefWidth="147.0">
          <children>
-            <Pane layoutX="145.0" layoutY="79.0" prefHeight="320.0" prefWidth="455.0">
+            <Pane layoutX="145.0" layoutY="79.0" prefHeight="320.0" prefWidth="455.0" stylesheets="@EstiloBotones.css">
                <children>
                   <ImageView fitHeight="321.0" fitWidth="455.0" pickOnBounds="true">
                      <image>
                         <Image url="@img/difumigado1.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="160.0" fitWidth="221.0" layoutX="230.0" layoutY="160.0" pickOnBounds="true">
+                     <image>
+                        <Image url="@img/cuadrovacio.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="162.0" fitWidth="221.0" layoutX="1.0" layoutY="159.0" pickOnBounds="true">
+                     <image>
+                        <Image url="@img/cuadrovacio.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="163.0" fitWidth="221.0" layoutX="229.0" layoutY="-2.0" pickOnBounds="true">
+                     <image>
+                        <Image url="@img/cuadrovacio.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="162.0" fitWidth="221.0" layoutX="1.0" layoutY="-1.0" pickOnBounds="true">
+                     <image>
+                        <Image url="@img/cuadrovacio.png" />
+                     </image>
+                  </ImageView>
+                  <Button layoutX="29.0" layoutY="49.0" mnemonicParsing="false" onAction="#abrirVentanaEmpleados" prefHeight="32.0" prefWidth="164.0" styleClass="boton-krusty" text="Gestionar empleados" textFill="WHITE" />
+                  <Button layoutX="257.0" layoutY="49.0" mnemonicParsing="false" onAction="#abrirAsistencia" prefHeight="32.0" prefWidth="164.0" styleClass="boton-krusty" text="Registrar asistencia" textFill="WHITE" />
+                  <Button layoutX="258.0" layoutY="215.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="164.0" styleClass="boton-krusty" text="Gestionar almacén" textFill="WHITE" />
+                  <Button layoutX="29.0" layoutY="215.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="164.0" styleClass="boton-krusty" text="Gestionar menú" textFill="WHITE" />
+                  <ImageView fitHeight="116.0" fitWidth="170.0" layoutX="255.0" layoutY="136.0">
+                     <image>
+                        <Image url="@img/almacen.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="118.0" fitWidth="171.0" layoutX="254.0" layoutY="-26.0">
+                     <image>
+                        <Image url="@img/asistencia.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="118.0" fitWidth="171.0" layoutX="25.0" layoutY="-26.0">
+                     <image>
+                        <Image url="@img/empleados.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="112.0" fitWidth="173.0" layoutX="24.0" layoutY="138.0">
+                     <image>
+                        <Image url="@img/menu.png" />
                      </image>
                   </ImageView>
                </children>
@@ -39,7 +83,7 @@
                         <Image url="@img/cartel_gerente.png" />
                      </image>
                   </ImageView>
-                  <Button layoutX="22.0" layoutY="337.0" mnemonicParsing="false" onAction="#btnRegresar" prefHeight="34.0" prefWidth="105.0" style="-fx-background-color: #37B4ED;" text="Regresar a login" textFill="WHITE" />
+                  <Button layoutX="22.0" layoutY="337.0" mnemonicParsing="false" onAction="#btnRegresar" prefHeight="34.0" prefWidth="105.0" style="-fx-background-color: #37B4ED;" text="Cerrar sesión" textFill="WHITE" />
                </children>
             </Pane>
             <ImageView fitHeight="20.0" fitWidth="600.0" pickOnBounds="true">

@@ -14,6 +14,22 @@ public class DetallePedido {
     private int idPedido;
     private int IdProducto;
     private int cantidad;
+    private String nombre;
+    private double precio;
+
+    public DetallePedido(String nombre, int cantidad, double precio){
+        this.nombre = nombre;
+        this.cantidad = cantidad;
+        this.precio = precio;
+    }
+
+    public String getNombre(){
+        return nombre;
+    }
+
+    public int getCantidad() {
+        return cantidad;
+    }
 
     public int getId() {
         return id;
@@ -39,16 +55,11 @@ public class DetallePedido {
         this.IdProducto = IdProducto;
     }
 
-    public int getCantidad() {
-        return cantidad;
-    }
-
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
     }
     
-    
-    
-    
-    
+    public double getPrecio(){
+    return precio;
+}
 }
