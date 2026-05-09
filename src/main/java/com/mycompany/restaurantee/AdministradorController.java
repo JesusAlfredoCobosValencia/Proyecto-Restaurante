@@ -40,8 +40,8 @@ public class AdministradorController implements Initializable{
     }
     
     @FXML
-    private void abrirRegistro(ActionEvent event){
-        MetodosGen.cambiarVista(event, "Gerente_Registro.fxml");
+    private void abrirAlmacen(ActionEvent event){
+        MetodosGen.cambiarVista(event, "Almacen.fxml");
     }
     
     @FXML
