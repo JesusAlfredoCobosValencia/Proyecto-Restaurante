@@ -1,0 +1,62 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : 12 abr 2026, 14:56:02
+    Author     : elcre
+*/
+
+.table-view{
+	-fx-background-color: transparent;
+	-fx-control-inner-background: transparent;
+	-fx-background-insets: 0;
+	-fx-padding: 0;
+}
+
+.table-view .viewport{
+	-fx-background-color: transparent;
+}
+
+.table-view .column-header-background{
+	-fx-background-color: transparent;
+}
+
+.table-view .filler{
+	-fx-background-color: transparent;
+}
+
+.table-view .corner{
+	-fx-background-color: transparent;
+}
+
+.table-view .table-cell{
+	-fx-background-color: transparent;
+	-fx-text-fill: #333333;
+}
+
+.table-row-cell{
+	-fx-background-color: transparent;
+}
+
+.table-row-cell:filled{
+	-fx-background-color: transparent;
+}
+
+.table-row-cell:empty{
+	-fx-background-color: transparent;
+}
+
+.table-view .column-header{
+	-fx-background-color: transparent;
+}
+
+.table-view .table-cell{
+	-fx-background-color: transparent;
+	-fx-text-fill: #333333;
+	-fx-border-color: transparent;
+}
+
+.table-view .table-cell{
+	-fx-alignment: CENTER;
+}
