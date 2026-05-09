@@ -72,6 +72,71 @@ public class PedidoDAO {
     
     
     
+    public void eliminarDetallesPedido(int idMesa) {
+    try {
+        Connection conexionSQL = Conexion.getConnection();
+        
+        // Cambiar la consulta para no usar `?` afuera
+        String consultaSQL = "DELETE FROM detalle_pedido WHERE id_pedido IN (SELECT id_pedido FROM pedido WHERE id_mesa = " + idMesa + ")";
+        
+        Statement pregunta = conexionSQL.createStatement();
+        
+        // Ejecutar la actualización
+        pregunta.executeUpdate(consultaSQL);
+        
+        System.out.println("Detalles del pedido eliminados.");
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+    
+    
+    
+    
+    
+    
+    
+    public void eliminarPedido(int idMesa) {
+    try {
+        Connection conexionSQL = Conexion.getConnection();
+        
+        // Cambiar la consulta para no usar `?` afuera
+        String consultaSQL = "DELETE FROM pedido WHERE id_mesa = " + idMesa;
+        
+        Statement pregunta = conexionSQL.createStatement();
+        
+        // Ejecutar la actualización
+        pregunta.executeUpdate(consultaSQL);
+        
+        System.out.println("Pedido eliminado.");
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+    
+    
+    
+    
+    
+    
+ 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
 }

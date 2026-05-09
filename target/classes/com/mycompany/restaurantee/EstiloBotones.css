@@ -1,0 +1,29 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : 12 abr 2026, 17:40:08
+    Author     : elcre
+*/
+
+.boton-krusty{
+	-fx-background-color: #C0392B;
+	-fx-text-fill: white;
+	-fx-font-weight: bold;
+	-fx-background-radius: 15;
+
+	-fx-border-color: #F4D03F;
+	-fx-border-width: 3;
+	-fx-border-radius: 15;
+
+	-fx-effect: dropshadow(gaussian, #2E86C1, 4, 0.2, 0, 1);
+}
+
+.boton-krusty:hover{
+	-fx-background-color: #922B21;
+}
+
+.boton-krusty:pressed{
+	-fx-background-color: #7B241C;
+}

@@ -8,7 +8,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Connection;
 import java.sql.Statement;
+
+
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  *
@@ -57,67 +61,107 @@ public class MesaDAO {
     
     
     public void ocuparMesa(int idMesa){
-        try{
-            Connection conexion = Conexion.getConnection();
-            
-             String consultaSQL = "update mesa set estado = 'ocupada' where id_mesa =" + idMesa;
-            
-            Statement preguntas = conexion.createStatement();
-            preguntas.executeUpdate(consultaSQL);
-            
-           
-            
-        }
-        catch(Exception e){
-            e.printStackTrace( );
-        }
+    try{
+        Connection conexion = Conexion.getConnection();
+
+        String consultaSQL = "update mesa set estado = 'ocupada' where id_mesa = " + idMesa;
+
+        Statement preguntas = conexion.createStatement();
+        preguntas.executeUpdate(consultaSQL);
+
     }
-    
-    
-    
-    public void cambiarEstado(int idMesa, String estado){
-        try{
-            
-            Connection conexion = Conexion.getConnection();
-            
-             String consultaSQL = "update mesa set estado =   '"+ estado + "' where id_mesa =" + idMesa;
-            
-            Statement preguntas = conexion.createStatement();
-            preguntas.executeUpdate(consultaSQL);
-            
-            
-            
-            
-            
-        }
-        catch(Exception  e){
-            e.printStackTrace();
-        }
+    catch(Exception e){
+        e.printStackTrace();
     }
+}
+    
+    
+    
+    public void cambiarEstado(int idMesa, String estado) {
+    try {
+        Connection conexion = Conexion.getConnection();
+        
+        // Asegúrate de que la consulta esté correctamente formada
+        String consultaSQL = "UPDATE mesa SET estado = '" + estado + "' WHERE id_mesa = " + idMesa;
+        
+        Statement preguntas = conexion.createStatement();
+        int rowsUpdated = preguntas.executeUpdate(consultaSQL);
+        
+        if (rowsUpdated > 0) {
+            System.out.println("Estado de la mesa actualizado correctamente.");
+        } else {
+            System.out.println("No se actualizó el estado de la mesa.");
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
     
     
     
     public String obtenerEstado(int idMesa){
-        String estado = "";
-        
-        try{
-            Connection conexion = Conexion.getConnection();
-            String consultaSQL = "select estado from mesa where id_mesa =" + idMesa;
-            
-           
-            Statement preguntas = conexion.createStatement();
-            ResultSet respuesta = preguntas.executeQuery(consultaSQL);
-            
-            if(respuesta.next()){
-                estado = respuesta.getString("estado");
-            }
-            
+    String estado = "";
+
+    try{
+        Connection conexion = Conexion.getConnection();
+
+        String consultaSQL = "select estado from mesa where id_mesa = " + idMesa;
+
+        Statement preguntas = conexion.createStatement();
+        ResultSet respuesta = preguntas.executeQuery(consultaSQL);
+
+        if(respuesta.next()){
+            estado = respuesta.getString("estado");
         }
-        catch(Exception e){
-            e.printStackTrace();
-        }
-        return estado;
+
     }
+    catch(Exception e){
+        e.printStackTrace();
+    }
+
+    return estado;
+}
+    
+    
+    
+    
+    
+public boolean isMesaOcupada(int idMesa) {
+    boolean mesaOcupada = false;
+
+    try {
+        // Obtener la conexión de la base de datos
+        Connection conexionSQL = Conexion.getConnection();
+
+        // Verificar si el estado de la mesa es 'reservada' o 'ocupada' en la tabla 'mesa'
+        String consultaSQL = "SELECT estado FROM mesa WHERE id_mesa = " + idMesa;
+        Statement pregunta = conexionSQL.createStatement();
+        ResultSet resultado = pregunta.executeQuery(consultaSQL);
+
+        // Si el estado es 'reservada' o 'ocupada', la mesa está ocupada
+        if (resultado.next()) {
+            String estado = resultado.getString("estado");
+            if (estado.equals("reservada") || estado.equals("ocupada")) {
+                mesaOcupada = true; // La mesa está reservada o ocupada
+            }
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return mesaOcupada;
+}
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  
     
     
     
